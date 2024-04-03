@@ -61,3 +61,10 @@ To import movies from the `sample_movies.txt` file, use the `/movies/import` end
 - [Express](https://expressjs.com/) - The web framework
 - [Sequelize](https://sequelize.org/) - ORM for database interactions
 
+## Docker
+
+1. To run the app using Docker:
+
+    ```bash
+    docker run -p 3000:3000 yourusername/movie-api
+
