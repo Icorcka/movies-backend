@@ -4,14 +4,27 @@ const sequelize = require('./database');
 const userRoutes = require('./routes/userRoutes');
 const sessionRoutes = require('./routes/sessionRoutes');
 const movieRoutes = require('./routes/movieRoutes');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
+
 app.use('/users', userRoutes);
 app.use('/sessions', sessionRoutes);
-app.use('/movies', movieRoutes);
+app.use('/movies', authenticateToken, movieRoutes);
 app.get('/download/sample_movies.txt', (req, res) => {
     res.download('./sample_movies.txt');
 });  
